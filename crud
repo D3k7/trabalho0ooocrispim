@@ -1,0 +1,54 @@
+from abc import ABC, abstractmethod
+
+# Interface Observador
+class Observador(ABC):
+    @abstractmethod
+    def atualizar(self, produto):
+        pass
+
+# Classe Sujeito
+class Estoque:
+    def __init__(self):
+        self._observadores = []
+        self._produtos = []
+
+    def adicionar_observador(self, observador):
+        self._observadores.append(observador)
+
+    def remover_observador(self, observador):
+        self._observadores.remove(observador)
+
+    def adicionar_produto(self, produto):
+        self._produtos.append(produto)
+        self.notificar_observadores(produto)
+
+    def notificar_observadores(self, produto):
+        for observador in self._observadores:
+            observador.atualizar(produto)
+
+# Classe Observador Concreto
+class Gerente(Observador):
+    def atualizar(self, produto):
+        if produto.preco > 1000:
+            print(f"Gerente notificado: Produto {produto.nome} com preço acima de R$ 1000 adicionado ao estoque.")
+
+# Classe Produto
+class Produto:
+    def __init__(self, nome, preco):
+        self.nome = nome
+        self.preco = preco
+
+# Exemplo de Uso
+if __name__ == "__main__":
+    estoque = Estoque()
+    gerente = Gerente()
+
+    estoque.adicionar_observador(gerente)
+
+    produto_carro = Produto("Carro", 15000)
+    produto_laptop = Produto("Laptop", 2000)
+    produto_mouse = Produto("Mouse", 50)
+
+    estoque.adicionar_produto(produto_carro)
+    estoque.adicionar_produto(produto_laptop)
+    estoque.adicionar_produto(produto_mouse)
